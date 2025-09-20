@@ -265,7 +265,7 @@ CREATE TABLE app_credentials (
 );
 ```
 
-### 🔑 **预置测试数据**
+### 🔑 **预置测试数据（示例）**
 
 | AppId | AppSecret | AppName | 状态 |
 |-------|-----------|---------|------|
@@ -291,10 +291,10 @@ spring:
   
   # MySQL数据库配置
   datasource:
-    url: jdbc:mysql://192.168.0.100:3306/openapi_service?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    url: jdbc:mysql://192.168.0.xxx:3306/xxxxxxxxxx?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: openapi
-    password: Openapi@4321
+    username: xxxxxxx
+    password: xxxxxxx
     
     # HikariCP连接池配置
     hikari:
