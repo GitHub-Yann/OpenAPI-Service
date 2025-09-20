@@ -346,13 +346,13 @@ logging:
 ```bash
 # 1. 确保MySQL数据库运行
 # 2. 创建数据库(如果不存在)
-CREATE DATABASE gateway_crud;
+CREATE DATABASE app_credentials;
 
 # 3. 启动应用
-mvn spring-boot:run
+mvn spring-boot:run -Dspring.profiles.active=loc
 
 # 4. 验证服务状态
-curl http://localhost:9911/test/public
+curl http://localhost:9911/api/v1/healthcheck
 ```
 
 ### 📊 **API测试用例**
@@ -372,7 +372,7 @@ curl -X POST http://localhost:9911/auth/token \
 
 ```bash
 # 使用生成的Token测试
-curl -X GET http://localhost:9911/api/v1/users \
+curl -X GET http://localhost:9911/api/service-a/v1/users \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
@@ -412,13 +412,13 @@ curl -X POST "http://localhost:9911/auth/validate?token=YOUR_JWT_TOKEN"
 
 ```log
 # 请求开始
-2025-09-20 15:10:15 request came [2025-09-20 15:10:15][req-123] GET /api/users from 127.0.0.1
+2025-09-20 15:10:15 request came [2025-09-20 15:10:15][req-123] GET /api/service-a/v1/users from 127.0.0.1
 
 # 认证成功
-2025-09-20 15:10:15 [req-123]认证成功 - Path: /api/users
+2025-09-20 15:10:15 [req-123]认证成功 - Path: /api/service-a/v1/users
 
 # 请求完成
-2025-09-20 15:10:15 request done [2025-09-20 15:10:15][req-123] GET /api/users - Status: 200 OK - Duration: 45ms
+2025-09-20 15:10:15 request done [2025-09-20 15:10:15][req-123] GET /api/service-a/v1/users - Status: 200 OK - Duration: 45ms
 ```
 
 ---
