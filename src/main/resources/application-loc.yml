@@ -1,0 +1,21 @@
+logging.config: classpath:logging-config-loc.xml
+is.test: Y
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  sql:
+    init:
+      mode: always  # always, embedded, never
+      schema-locations: classpath:h2-schema.sql
+      data-locations: # 明确指定不加载data.sql，或指定其他文件
+  h2:
+    console:
+      enabled: true  # 可以访问H2控制台 http://localhost:8080/h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop  # 应用关闭时删除表结构
