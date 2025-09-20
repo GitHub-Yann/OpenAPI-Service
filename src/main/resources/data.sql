@@ -15,6 +15,4 @@ CREATE TABLE IF NOT EXISTS app_credentials (
 
 -- 插入测试数据（使用INSERT IGNORE避免重复插入）
 INSERT IGNORE INTO app_credentials (app_id, app_secret, app_name, description, status) VALUES 
-('test-app-001', 'test-secret-001-abcdef123456789', '测试应用', '用于API测试的默认应用', 1),
-('demo-app-002', 'demo-secret-002-xyz987654321abc', '演示应用', '用于功能演示的应用', 1),
-('prod-app-003', 'prod-secret-003-secure-long-key', '生产应用', '生产环境使用的应用', 1);
+('test-app-001', 'test-secret-001-abcdef123456789', '测试应用', '用于API测试的默认应用', 1);

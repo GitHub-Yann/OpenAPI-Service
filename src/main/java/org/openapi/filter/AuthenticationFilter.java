@@ -160,7 +160,7 @@ public class AuthenticationFilter implements WebFilter {
         // 设置Cache-Control避免缓存错误响应
         response.getHeaders().set("Cache-Control", "no-cache, no-store, must-revalidate");
 
-        BaseResponse<String> errorResponse = BaseResponse.error(errorCode, errorMessage);
+        BaseResponse<String> errorResponse = BaseResponse.ERROR(errorCode, errorMessage);
         
         try {
             String responseBody = objectMapper.writeValueAsString(errorResponse);

@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 
+import org.openapi.common.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -69,7 +70,7 @@ public class RemoteCallService {
         LOGGER.info("[{}], new url {}", requestUniqueId, targetUrl);
 
         if(!StringUtils.hasText(targetUrl)){
-            return Mono.just(ResponseEntity.status(404).body("{\"error\":\"OpenAPI - Resource Not Found\"}")); 
+            return Mono.just(ResponseEntity.status(404).body(BaseResponse.toErrorJsonString(404, "OpenAPI - Resource Not Found"))); 
         }
         // 读取请求体
         return exchange.getRequest().getBody()

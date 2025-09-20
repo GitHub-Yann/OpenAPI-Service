@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,7 +66,7 @@ public class AuthController {
                 if (!credentialsOpt.isPresent()) {
                     LOGGER.warn("应用凭证验证失败 - appId: {}", authRequest.getAppId());
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(BaseResponse.error(401, "应用凭证验证失败，请检查appId和appSecret"));
+                        .body(BaseResponse.ERROR(401, "应用凭证验证失败，请检查appId和appSecret"));
                 }
 
                 AppCredentials credentials = credentialsOpt.get();
@@ -92,7 +93,7 @@ public class AuthController {
                 LOGGER.error("Token生成异常 - appId: {}, error: {}", 
                     authRequest.getAppId(), e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(BaseResponse.error(500, "Token生成失败: " + e.getMessage()));
+                    .body(BaseResponse.ERROR(500, "Token生成失败: " + e.getMessage()));
             }
         });
     }
@@ -103,7 +104,7 @@ public class AuthController {
      * @param token JWT token
      * @return 验证结果
      */
-    @PostMapping("/validate")
+    @GetMapping("/validate")
     public Mono<ResponseEntity<BaseResponse<Map<String, Object>>>> validateToken(@RequestParam String token) {
         return Mono.fromCallable(() -> {
             LOGGER.info("收到Token验证请求");
@@ -113,7 +114,7 @@ public class AuthController {
                 
                 if (!isValid) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(BaseResponse.error(401, "Token无效或已过期"));
+                        .body(BaseResponse.ERROR(401, "Token无效或已过期"));
                 }
 
                 // 解析token信息
@@ -137,7 +138,7 @@ public class AuthController {
             } catch (Exception e) {
                 LOGGER.warn("Token验证失败: {}", e.getMessage());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(BaseResponse.error(401, "Token验证失败: " + e.getMessage()));
+                    .body(BaseResponse.ERROR(401, "Token验证失败: " + e.getMessage()));
             }
         });
     }

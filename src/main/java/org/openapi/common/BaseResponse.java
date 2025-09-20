@@ -31,11 +31,15 @@ public class BaseResponse<T> {
 	}
 
 	public static <T> BaseResponse<T> ERROR(String errorMsg) {
-		return new BaseResponse<>(false, errorMsg, null);
+		return new BaseResponse<>(false, 500,errorMsg, null);
 	}
 
-	public static <T> BaseResponse<T> error(Integer errorCode, String errorMsg) {
+	public static <T> BaseResponse<T> ERROR(Integer errorCode, String errorMsg) {
 		return new BaseResponse<>(false, errorCode, errorMsg, null);
+	}
+
+	public static String toErrorJsonString(Integer errorCode, String errorMsg){
+		return "{\"result\":false,\"errorCode\":"+errorCode+",\"errorMsg\":\""+errorMsg+"\",\"data\":null}";
 	}
 
 	public String getErrorMsg() {

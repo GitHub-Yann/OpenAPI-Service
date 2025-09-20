@@ -1,5 +1,6 @@
 package org.openapi.controller;
 
+import org.openapi.common.BaseResponse;
 import org.openapi.common.ConstantsHub;
 import org.openapi.service.RemoteCallService;
 import org.slf4j.Logger;
@@ -34,17 +35,16 @@ public class ServiceController {
 		LOGGER.error("[{}]EXP", requestUniqueId, e);
 
 		int status = 500;
-		String code = "UNKNOWN";
-		String message = "未知异常";
+		String message = "OpenAPI - 未知异常";
 		if(e.getMessage() != null){
 			message = e.getMessage();
 		}
 		if(e instanceof WebClientRequestException){
 			status = 502;
-			code = "BAD_GATEWAY";
+			message = "OpenAPI - BAD_GATEWAY";
 		}
 
-		String errorBody = String.format("{\"success\":false,\"code\":\"%s\",\"message\":\"OpenAPI service process failed - %s\"}", code, message);
+		String errorBody = BaseResponse.toErrorJsonString(status, message);
 		return ResponseEntity.status(status)
 				.header("Content-Type", "application/json;charset=UTF-8")
 				.body(errorBody);

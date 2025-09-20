@@ -270,8 +270,6 @@ CREATE TABLE app_credentials (
 | AppId | AppSecret | AppName | 状态 |
 |-------|-----------|---------|------|
 | `test-app-001` | `test-secret-001-abcdef123456789` | 测试应用 | 启用 |
-| `demo-app-002` | `demo-secret-002-xyz987654321abc` | 演示应用 | 启用 |
-| `prod-app-003` | `prod-secret-003-secure-long-key` | 生产应用 | 启用 |
 
 ---
 
@@ -349,7 +347,7 @@ logging:
 CREATE DATABASE app_credentials;
 
 # 3. 启动应用
-mvn spring-boot:run -Dspring.profiles.active=loc
+mvn spring-boot:run -Dspring-boot.run.profiles=loc
 
 # 4. 验证服务状态
 curl http://localhost:9911/api/v1/healthcheck
@@ -379,7 +377,7 @@ curl -X GET http://localhost:9911/api/service-a/v1/users \
 #### **测试Token验证**
 
 ```bash
-curl -X POST "http://localhost:9911/auth/validate?token=YOUR_JWT_TOKEN"
+curl -i "http://localhost:9911/auth/validate?token=YOUR_JWT_TOKEN"
 ```
 
 ---

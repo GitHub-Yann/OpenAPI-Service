@@ -1,17 +1,20 @@
 package org.openapi.filter;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import org.openapi.common.BaseResponse;
 import org.openapi.common.ConstantsHub;
+import org.openapi.common.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -27,8 +30,7 @@ import reactor.core.publisher.Mono;
 public class GlobalWebFilter implements WebFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalWebFilter.class);
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
+    
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -36,7 +38,7 @@ public class GlobalWebFilter implements WebFilter {
 
         // 记录请求开始时间
         long startTime = System.currentTimeMillis();
-        String requestTime = LocalDateTime.now().format(FORMATTER);
+        String requestTime = LocalDateTime.now().format(Utils.FORMATTER);
         
         // 生成请求唯一ID
         String requestUniqueId = request.getHeaders().getFirst("X-Request-Unique-Id");
@@ -77,7 +79,7 @@ public class GlobalWebFilter implements WebFilter {
                             response.getStatusCode(),
                             duration);
                 })
-                .doOnError(throwable -> {
+                .onErrorResume(throwable -> {
                     long endTime = System.currentTimeMillis();
                     long duration = endTime - startTime;
                     LOGGER.error("request done [{}][{}] {} {} - Error: {} - Duration: {}ms", 
@@ -87,6 +89,25 @@ public class GlobalWebFilter implements WebFilter {
                             request.getURI(),
                             throwable.getMessage(),
                             duration);
+                    
+                    // 构造错误响应体
+                    String errorResponse;
+                    String errorMsg = "OpenAPI - 服务器内部错误";
+                    int errorCode = 500;
+                    try {
+                        if(throwable instanceof ResponseStatusException){
+                            errorMsg = "OpenAPI - "+((ResponseStatusException) throwable).getReason();
+                            errorCode = ((ResponseStatusException) throwable).getStatus().value();
+                        }
+                        errorResponse = Utils.OBJECT_MAPPER.writeValueAsString(BaseResponse.ERROR(errorCode,errorMsg));
+                    } catch (Exception e) {
+                        errorResponse = BaseResponse.toErrorJsonString(500, "OpenAPI - 服务器内部错误[1]");
+                    }
+                    // 设置统一错误响应
+                    response.setRawStatusCode(errorCode);
+                    response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+                    // 写入响应
+                    return response.writeWith(Mono.just(response.bufferFactory().wrap(errorResponse.getBytes())));
                 });
     }
 
