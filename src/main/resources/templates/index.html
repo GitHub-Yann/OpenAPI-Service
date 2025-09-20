@@ -1,0 +1,47 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon-64x64.ico">
+    <style>
+        .mytarget{
+            color:rgb(116, 154, 227);
+            text-decoration: none;
+        }
+        .beian{
+            width: 14px;
+        }
+        #rainbowText {
+            animation: rainbow 8s infinite;
+        }
+        @keyframes rainbow {
+            0%   { color: red; }
+            14%  { color: orange; }
+            28%  { color: yellow; }
+            42%  { color: green; }
+            57%  { color: blue; }
+            71%  { color: indigo; }
+            85%  { color: violet; }
+            100% { color: red; }
+        }
+    </style>
+
+</head>
+<script>
+
+</script>
+
+<body style="margin: auto;">
+    <div style="text-align:center;margin-top: 80px;">
+        <h1><span id="rainbowText">building......</span></h1>
+    </div>
+    <div style="text-align:center;">
+        <a class="mytarget" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备2024119984号</a>&nbsp;&nbsp;
+        <img class="beian" src="/img/beian-logo.png" alt>
+        <a class="mytarget" href="https://beian.mps.gov.cn/" target="_blank">苏公网安备32050702011771号</a>
+    </div>
+</body>
+
+</html>
