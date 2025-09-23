@@ -33,7 +33,7 @@ public class WebFluxConfig {
         try{
             // TODO: 拉取服务列表，这边暂时使用的是模拟数据，后期可以对接eureka，nacos等服务注册中心
             Map<String, String> tmp = new ConcurrentHashMap<String, String>(); 
-            tmp.put("/api/service-a/**", "http://localhost:8081");
+            tmp.put("/api/service-a/**", "http://192.168.2.51:8081");
             tmp.put("/api/service-b/**", "http://localhost:8081");
             tmp.put("/api/service-c/**", "http://localhost:8082");
 
