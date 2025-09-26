@@ -11,4 +11,10 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+  # netty: 
+  #   idle-timeout: 120s   # 空闲超时时间，当设置了keep-alive，从wireshark看到一直有探测的包，所以这里设置120秒超时
+
+
+
+
 
