@@ -1,6 +1,7 @@
 package org.openapi.filter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 import org.openapi.common.Utils;
@@ -12,6 +13,7 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -96,7 +98,7 @@ public class TestFilter implements WebFilter {
         // 获取原始响应体
         return webClient
                 .get()
-                .uri("http://127.0.0.1:8001"+path) // 替换为实际的目标服务URL
+                .uri("http://127.0.0.1:8008"+path) // 替换为实际的目标服务URL
                 .headers(httpHeaders->{
                     if (headers != null) {
                         httpHeaders.addAll(headers);
@@ -116,7 +118,7 @@ public class TestFilter implements WebFilter {
         // 获取原始响应体
         return webClient
                 .post()
-                .uri("http://127.0.0.1:8001"+path) // 替换为实际的目标服务URL
+                .uri("http://127.0.0.1:8008"+path) // 替换为实际的目标服务URL
                 .headers(httpHeaders->{
                     if (headers != null) {
                         httpHeaders.addAll(headers);
@@ -138,7 +140,7 @@ public class TestFilter implements WebFilter {
         // 获取原始响应体
         return webClient
                 .put()
-                .uri("http://127.0.0.1:8001"+path) // 替换为实际的目标服务URL
+                .uri("http://127.0.0.1:8008"+path) // 替换为实际的目标服务URL
                 .headers(httpHeaders->{
                     if (headers != null) {
                         httpHeaders.addAll(headers);
@@ -160,7 +162,7 @@ public class TestFilter implements WebFilter {
         // 获取原始响应体
         return webClient
                 .delete()
-                .uri("http://127.0.0.1:8001"+path) // 替换为实际的目标服务URL
+                .uri("http://127.0.0.1:8008"+path) // 替换为实际的目标服务URL
                 .headers(httpHeaders->{
                     if (headers != null) {
                         httpHeaders.addAll(headers);
@@ -220,7 +222,7 @@ public class TestFilter implements WebFilter {
             return exchange.getResponse().writeWith(sseFlux);
         } else {
             // 处理普通响应
-            LOGGER.info("method=[{}], reqId=[{}], Received normal response", reqId);
+            LOGGER.info("method=[{}], reqId=[{}], Received normal response",action, reqId);
             
             // 复制响应头
             backendHeaders.forEach((headerName, headerValues) -> {
@@ -230,6 +232,9 @@ public class TestFilter implements WebFilter {
                     exchange.getResponse().getHeaders().put(headerName, headerValues);
                 }
             });
+
+            // 打印响应头
+            this.getRespHeaders(exchange, reqId);
             
             return response.bodyToMono(String.class)
                     .doOnNext(responseBody -> {
@@ -246,6 +251,10 @@ public class TestFilter implements WebFilter {
     private String modifyRequestBody(String originalBody,String reqId) {
         String newBody="";
         // 在这里实现你的请求体修改逻辑
+        if(!StringUtils.hasText(originalBody)){
+            LOGGER.info("reqId=[{}] originalBody1: {}, newBody1: {}", reqId,originalBody,newBody);
+            return newBody;
+        }
         try {
             ObjectNode newBodyNode = Utils.OBJECT_MAPPER.createObjectNode();
             JsonNode originalBodyNode = Utils.OBJECT_MAPPER.readTree(originalBody);
@@ -254,14 +263,14 @@ public class TestFilter implements WebFilter {
             if(originalBodyNode!=null && originalBodyNode.isObject()) {
                 newBodyNode.setAll((ObjectNode) originalBodyNode);
             }
-            newBodyNode.put("newField1111", "newValue222222");
+            // newBodyNode.put("newField1111", "newValue222222");
             // 返回修改后的请求体
             newBody = newBodyNode.toString();
         } catch (Exception e) {
             LOGGER.error("reqId=[{}] , EXP: {}",reqId, e.getMessage(),e);
             return originalBody;
         }
-        LOGGER.info("reqId=[{}] originalBody: {}, newBody: {}", reqId,originalBody,newBody);
+        LOGGER.info("reqId=[{}] originalBody2: {}, newBody2: {}", reqId,originalBody,newBody);
         return newBody;
     }
 
